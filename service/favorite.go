@@ -3,10 +3,11 @@ package service
 import (
 	"douyin-server/dao"
 	"errors"
-	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 	"log"
 	"strconv"
+
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 // Favorite 点赞/取消点赞视频
@@ -90,7 +91,7 @@ Transaction:
 		goto Transaction
 	}
 
-	if actionType == "1" { //点赞视频
+	if actionType == "1" { // 点赞视频
 		// 通过从点赞关联表中查询结果，判断当前用户是否已点赞过该视频，该错误可忽略
 		rows, _ := dao.DB.Model(&dao.Favorite{}).Where("user_id = ? AND video_id = ?", userId, videoId).Rows()
 		if rows.Next() {
@@ -112,7 +113,7 @@ Transaction:
 			tx.Rollback()
 			return err
 		}
-	} else if actionType == "2" { //取消点赞
+	} else if actionType == "2" { // 取消点赞
 		// 如果当前视频点赞数不为正数，则取消点赞操作是异常的，会导致视频点赞数变为负数
 		if userFavoriteCount <= 0 {
 			tx.Rollback()
@@ -122,7 +123,7 @@ Transaction:
 			return errors.New("取消点赞异常，视频点赞数为非正数")
 		}
 
-		//更新数值
+		// 更新数值
 		userFavoriteCount--
 		videoFavoriteCount--
 		authorTotalFavorited--
@@ -136,7 +137,7 @@ Transaction:
 		}
 	}
 
-	//更新表中与点赞相关的数据
+	// 更新表中与点赞相关的数据
 	err = tx.Model(&dao.Video{}).Where("id = ?", videoId).Update("favorite_count", videoFavoriteCount).Error
 	if err != nil {
 		tx.Rollback()
@@ -159,13 +160,13 @@ Transaction:
 
 // FavoriteList 获取点赞列表
 func FavoriteList(userId int64) ([]dao.Video, error) {
-	//依据用户id查询当前用户点赞的所有视频的视频id，存入favorite数组
+	// 依据用户id查询当前用户点赞的所有视频的视频id，存入favorite数组
 	favorite := []dao.Favorite{}
 	err := dao.DB.Model(&dao.Favorite{}).Where("user_id = ?", userId).Find(&favorite).Error
 	if err != nil {
 		return nil, err
 	}
-	//依据favorite数组中的数据查询视频列表
+	// 依据favorite数组中的数据查询视频列表
 	videoList := []dao.Video{}
 	for _, f := range favorite {
 		video := dao.Video{}

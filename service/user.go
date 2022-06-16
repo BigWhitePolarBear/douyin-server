@@ -31,7 +31,12 @@ func InitUser() {
 	if err != nil {
 		panic(err)
 	}
-	defer rows.Close()
+	defer func() {
+		err = rows.Close()
+		if err != nil {
+			panic(err)
+		}
+	}()
 
 	// 将数据库中所有用户名存在布隆过滤器中
 	var id, name string
@@ -60,6 +65,9 @@ func LoginLimit(ipAddress string) bool {
 func Register(username, password string) (id int64, err error) {
 	if len(username) > 32 {
 		return 0, errors.New("用户名过长，不可超过32位")
+	}
+	if len(username) == 0 {
+		return 0, errors.New("用户名不可为空")
 	}
 	if len(password) > 32 {
 		return 0, errors.New("密码过长，不可超过32位")

@@ -10,7 +10,6 @@ require (
 	golang.org/x/crypto v0.0.0-20220427172511-eb4f295cb31f
 	gorm.io/driver/mysql v1.3.3
 	gorm.io/gorm v1.23.5
-	gorm.io/plugin/optimisticlock v1.0.7
 )
 
 require (

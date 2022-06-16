@@ -13,8 +13,8 @@ import (
 
 type FeedResponse struct {
 	Response
-	VideoList []dao.Video `json:"video_list,omitempty"`
-	NextTime  int64       `json:"next_time,omitempty"`
+	VideoList []service.Video `json:"video_list,omitempty"`
+	NextTime  int64           `json:"next_time,omitempty"`
 }
 
 func Feed(c *gin.Context) {
